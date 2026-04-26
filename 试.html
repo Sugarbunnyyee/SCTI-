@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCTI 校园生存人格测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            background: #f5f1eb;
+            min-height: 100vh;
+            padding: 20px;
+            color: #3d3d3d;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border: 1px solid #e8e3db;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .logo {
+            font-size: 2.4rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: #5b7b94;
+        }
+        .subtitle {
+            font-size: 0.9rem;
+            color: #7a7a7a;
+        }
+        .divider {
+            width: 40px;
+            height: 3px;
+            background: #e8a87c;
+            border-radius: 2px;
+            margin: 12px auto 0;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 26px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            text-align: center;
+            margin: 5px;
+        }
+        .btn-primary {
+            background: #5b7b94;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #4a6a82;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #e8e3db;
+            color: #3d3d3d;
+        }
+        .btn-outline:hover {
+            border-color: #b0a590;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .progress-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: #e8e3db;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #5b7b94;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        .progress-text {
+            font-size: 0.8rem;
+            color: #7a7a7a;
+            font-weight: 600;
+            min-width: 45px;
+        }
+        .q-badge {
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #e8a87c;
+            background: #fdf3e9;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+        }
+        .q-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .q-hint {
+            font-size: 0.8rem;
+            color: #e8a87c;
+            margin-bottom: 12px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border: 2px solid #e8e3db;
+            border-radius: 14px;
+            cursor: pointer;
+            background: #fdfdfb;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            user-select: none;
+        }
+        .option:hover {
+            border-color: #c4b99a;
+        }
+        .option.selected {
+            border-color: #5b7b94;
+            background: #f2f6f9;
+            font-weight: 500;
+        }
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: transparent;
+        }
+        .option-check {
+            width: 20px;
+            height: 20px;
+            border-radius: 6px;
+            border: 2px solid #ccc;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            color: transparent;
+        }
+        .option.selected .option-radio,
+        .option.selected .option-check {
+            border-color: #5b7b94;
+            background: #5b7b94;
+            color: #fff;
+        }
+        .option-letter {
+            font-weight: 700;
+            color: #5b7b94;
+            min-width: 20px;
+        }
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .personality-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .personality-mini {
+            background: #fdfdfb;
+            border: 1.5px solid #e8e3db;
+            border-radius: 14px;
+            padding: 14px 8px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .personality-mini:hover {
+            border-color: #5b7b94;
+            transform: translateY(-2px);
+        }
+        .personality-mini .p-emoji {
+            font-size: 1.8rem;
+        }
+        .personality-mini .p-code {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #5b7b94;
+        }
+        .personality-mini .p-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+        .personality-mini .p-tagline {
+            font-size: 0.68rem;
+            color: #7a7a7a;
+            margin-top: 2px;
+        }
+        .result-hero {
+            text-align: center;
+            padding: 10px 0 16px;
+            border-bottom: 1px solid #e8e3db;
+            margin-bottom: 16px;
+        }
+        .result-emoji {
+            font-size: 5rem;
+        }
+        .result-code {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: #5b7b94;
+        }
+        .result-name {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 4px 0;
+        }
+        .result-tagline {
+            font-size: 0.9rem;
+            color: #e8a87c;
+            margin-bottom: 4px;
+        }
+        .result-type-tag {
+            display: inline-block;
+            background: #f0ebe0;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #5b5b5b;
+            margin-top: 4px;
+        }
+        .interpretation {
+            background: #faf8f4;
+            border-radius: 14px;
+            padding: 16px 18px;
+            margin-bottom: 14px;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #555;
+        }
+        .interpretation b {
+            color: #5b7b94;
+        }
+        .sw-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .sw-box {
+            flex: 1;
+            min-width: 140px;
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        .sw-box.strengths {
+            background: #f0f7f0;
+            border: 1px solid #d4e8d4;
+        }
+        .sw-box.weaknesses {
+            background: #fef6f0;
+            border: 1px solid #f0dcc8;
+        }
+        .sw-box h4 {
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+        .sw-box ul {
+            padding-left: 18px;
+        }
+        .sw-box li {
+            margin-bottom: 3px;
+        }
+        .dim-section {
+            margin-bottom: 14px;
+        }
+        .dim-section h4 {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        .dim-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 0.82rem;
+        }
+        .dim-label {
+            width: 75px;
+            text-align: right;
+            font-weight: 600;
+            color: #7a7a7a;
+            flex-shrink: 0;
+        }
+        .dim-bar-wrap {
+            flex: 1;
+            height: 22px;
+            background: #e8e3db;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .dim-bar-fill {
+            height: 100%;
+            border-radius: 12px;
+            transition: width 0.8s;
+        }
+        .dim-bar-fill.blue {
+            background: #5b7b94;
+        }
+        .dim-bar-fill.orange {
+            background: #e8a87c;
+        }
+        .dim-val {
+            width: 40px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .match-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+        .match-card {
+            flex: 1;
+            min-width: 130px;
+            background: #fdfdfb;
+            border: 1.5px solid #e8e3db;
+            border-radius: 14px;
+            padding: 14px;
+            text-align: center;
+        }
+        .match-card h4 {
+            font-size: 0.78rem;
+            color: #7a7a7a;
+            margin-bottom: 6px;
+        }
+        .match-card .m-emoji {
+            font-size: 2rem;
+        }
+        .match-card .m-name {
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+        .match-card .m-desc {
+            font-size: 0.7rem;
+            color: #7a7a7a;
+            margin-top: 2px;
+        }
+        .match-card.best {
+            border-color: #c4d8c4;
+            background: #f7faf7;
+        }
+        .match-card.comp {
+            border-color: #f0d8c0;
+            background: #fefaf6;
+        }
+        .sim-badge {
+            display: inline-block;
+            background: #5b7b94;
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.68rem;
+            font-weight: 700;
+            margin-top: 4px;
+        }
+        .result-motto {
+            text-align: center;
+            font-style: italic;
+            color: #7a7a7a;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+        }
+        .btn-row-center {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 首页 -->
+        <div class="card" id="homeCard">
+            <div class="header">
+                <div class="logo">SCTI</div>
+                <div class="subtitle">School Campus Type Indicator</div>
+                <div class="divider"></div>
+            </div>
+            <p style="text-align:center;color:#7a7a7a;font-size:0.9rem;">📚 测测你在大学里到底是什么"人"</p>
+            <p style="text-align:center;color:#b0a590;font-size:0.75rem;margin-bottom:16px;">15道题 · 16种校园生存人格</p>
+            <div style="text-align:center;margin-bottom:20px;">
+                <button class="btn btn-primary" onclick="startTest()">✨ 开始测试</button>
+            </div>
+            <div style="border-top:1px solid #e8e3db;padding-top:16px;">
+                <p style="text-align:center;font-weight:700;font-size:0.9rem;">🎭 16型人格速览（点击查看详情）</p>
+                <div class="personality-grid" id="homeMiniGrid"></div>
+            </div>
+        </div>
+
+        <!-- 题目区 -->
+        <div class="card hidden" id="quizCard">
+            <div class="progress-wrap">
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                <span class="progress-text" id="progressText">1/15</span>
+            </div>
+            <div id="questionArea"></div>
+            <div class="btn-row">
+                <button class="btn btn-outline hidden" id="prevBtn" onclick="prevQ()">← 上一题</button>
+                <button class="btn btn-primary" id="nextBtn" onclick="nextQ()">下一题 →</button>
+            </div>
+        </div>
+
+        <!-- 结果显示区 -->
+        <div id="resultArea"></div>
+    </div>
+
+    <script>
+        // ==================== 数据 ====================
+        var questions = [
+            { id: 1, title: '开学第一周拿到课表，你的第一反应是？', type: 'single', options: [{ l: 'A',
+                    t: '立刻标出所有交作业时间和考试时间，制定学期学习计划', d: 'J' }, { l: 'B', t: '大概扫一眼，心里有个数就行',
+                d: 'J' }, { l: 'C', t: '先看看有没有早八，没有就放心了', d: 'P' }, { l: 'D',
+                    t: '拍了照就忘在相册里了，到时候再说', d: 'P' }] },
+            { id: 2, title: '一堂课老师讲得特别无聊，你会？（可多选）', type: 'multi', options: [{ l: 'A',
+                    t: '打开笔记本开始自学其他内容', d: 'J' }, { l: 'B', t: '刷手机，但偶尔抬头假装记笔记', d: 'T' }, { l: 'C',
+                    t: '和同桌小声聊天打发时间', d: 'E' }, { l: 'D', t: '直接趴下睡了，反正坐着也是坐着', d: 'P' }] },
+            { id: 3, title: '期末复习，你的状态最接近以下哪种？', type: 'single', options: [{ l: 'A', t: '提前一个月按计划复习',
+                d: 'J' }, { l: 'B', t: '考前一周开始集中冲刺', d: 'J' }, { l: 'C', t: '考前三天极限爆肝',
+            d: 'P' }, { l: 'D', t: '边哭边学，精神状态成谜', d: 'Fs' }, { l: 'E', t: '已经无所谓了，转发锦鲤等天意',
+                d: 'P' }] },
+            { id: 4, title: '老师布置了一篇5000字的课程论文，你通常会？', type: 'single', options: [{ l: 'A',
+                    t: '提前两周开始查资料写大纲', d: 'J' }, { l: 'B', t: '先玩几天，截止前48小时一口气写完', d: 'P' }, { l: 'C',
+                    t: '到处问同学"你写了吗"', d: 'F' }, { l: 'D', t: '拖到最后一晚通宵赶完', d: 'P' }, { l: 'E',
+                    t: '找学长学姐要一篇参考', d: 'F' }] },
+            { id: 5, title: '周五下午没课，你最想怎么过？（可多选）', type: 'multi', options: [{ l: 'A', t: '图书馆抢座，提前预习',
+                d: 'J' }, { l: 'B', t: '宿舍躺平，刷剧打游戏', d: 'P' }, { l: 'C', t: '约朋友出去逛吃逛吃',
+            d: 'E' }, { l: 'D', t: '一个人去咖啡厅发呆或看书', d: 'I' }] },
+            { id: 6, title: '社团招新/百团大战时，你通常是？（可多选）', type: 'multi', options: [{ l: 'A',
+                t: '主动报名多个社团，积极面试', d: 'E' }, { l: 'B', t: '挑一两个感兴趣的，拉着朋友一起', d: 'E' }, { l: 'C',
+                    t: '被室友或同学拉去凑数', d: 'F' }, { l: 'D', t: '路过看一眼，默默走开', d: 'I' }] },
+            { id: 7, title: '在校园里迎面走来一个不太熟的同学，你会？', type: 'single', options: [{ l: 'A', t: '主动微笑打招呼',
+                d: 'E' }, { l: 'B', t: '点头示意，脚步不停', d: 'T' }, { l: 'C', t: '假装低头看手机',
+            d: 'I' }, { l: 'D', t: '绕路走，假装没看到', d: 'I' }, { l: 'E', t: '看对方反应再决定', d: 'T' }] },
+            { id: 8, title: '被拉进一个全是陌生人的群，你会？', type: 'single', options: [{ l: 'A', t: '主动自我介绍',
+                d: 'E' }, { l: 'B', t: '先观察几天再决定', d: 'T' }, { l: 'C', t: '直接免打扰潜水到底',
+            d: 'I' }, { l: 'D', t: '退出群聊', d: 'I' }, { l: 'E', t: '发个表情包然后潜水', d: 'T' }] },
+            { id: 9, title: '小组作业里，你通常扮演什么角色？', type: 'single', options: [{ l: 'A',
+                t: '主动担任组长，分配任务催进度', d: 'L' }, { l: 'B', t: '不想当组长但默默扛下最多活儿', d: 'L' }, { l: 'C',
+                    t: '负责美化PPT或设计海报', d: 'F' }, { l: 'D', t: '组长分配什么就做什么', d: 'F' }, { l: 'E',
+                    t: '全程隐身，最后在致谢页拥有姓名', d: 'F' }] },
+            { id: 10, title: '小组讨论时和组员意见不合，你会？（可多选）', type: 'multi', options: [{ l: 'A',
+                t: '坚持自己的观点，摆事实讲道理', d: 'T' }, { l: 'B', t: '先听别人说完再委婉提出想法', d: 'T' }, { l: 'C',
+                    t: '心里不服但表面同意', d: 'Fs' }, { l: 'D', t: '不说话，谁赢了就听谁的', d: 'F' }] },
+            { id: 11, title: '小组作业截止前两天有组员还没完成，你会？', type: 'single', options: [{ l: 'A',
+                t: '在群里直接提醒，附上倒计时', d: 'L' }, { l: 'B', t: '私聊温柔催促', d: 'L' }, { l: 'C',
+                    t: '默默帮ta做完', d: 'L' }, { l: 'D', t: '不管，反正挨批评的不是我', d: 'F' }, { l: 'E',
+                    t: '在群里阴阳怪气但不说名字', d: 'Fs' }] },
+            { id: 12, title: '食堂排队时，你在想什么或做什么？（可多选）', type: 'multi', options: [{ l: 'A',
+                t: '研究哪个窗口最快，计算最优路线', d: 'J' }, { l: 'B', t: '刷手机，排到哪算哪', d: 'P' }, { l: 'C',
+                    t: '观察前面的人点了啥', d: 'P' }, { l: 'D', t: '心里抱怨但表面毫无波澜', d: 'T' }, { l: 'E',
+                    t: '让室友帮忙带，自己不排', d: 'I' }] },
+            { id: 13, title: '凌晨一点还没睡，最可能是因为？（可多选）', type: 'multi', options: [{ l: 'A',
+                t: '在赶明天要交的作业', d: 'J' }, { l: 'B', t: '刷短视频或看剧停不下来', d: 'P' }, { l: 'C',
+                    t: '躺床上胡思乱想越想越清醒', d: 'T' }, { l: 'D', t: '和室友或朋友夜聊', d: 'E' }, { l: 'E',
+                    t: '在朋友圈发完又删，进入emo状态', d: 'Fs' }] },
+            { id: 14, title: '室友在宿舍群里发了一条消息，你会？', type: 'single', options: [{ l: 'A',
+                t: '秒回，然后开启一段聊天', d: 'E' }, { l: 'B', t: '看到了先不回，想好怎么说再回', d: 'T' }, { l: 'C',
+                    t: '回个表情包表示已阅', d: 'Fs' }, { l: 'D', t: '已读不回，除非重要的事', d: 'I' }, { l: 'E',
+                    t: '不看群消息，室友会来戳我', d: 'I' }] },
+            { id: 15, title: '看到校园墙上有人匿名吐槽"好迷茫"，你会？', type: 'single', options: [{ l: 'A',
+                t: '默默点赞，表示"我也是"', d: 'T' }, { l: 'B', t: '认真评论，给建议或安慰', d: 'Fs' }, { l: 'C',
+                    t: '截图发宿舍群一起讨论', d: 'E' }, { l: 'D', t: '划走，与我无关', d: 'I' }, { l: 'E',
+                    t: '自己也发一条，一起迷茫', d: 'Fs' }] }
+        ];
+
+        var pers = {
+            'EJLT': { em: '🥬', nm: '卷心菜', tg: '外表平平无奇，切开全是卷', typeTag: '图书馆常驻·优雅卷王',
+                interpret: '你就像一颗<b>卷心菜</b>——外表看起来和所有人一样普通，甚至有些不起眼。但切开一层又一层，每一层都是扎实的知识储备和深思熟虑的计划。你卷得不声张、不炫耀，甚至在别人眼里你看起来"学得挺轻松的"。你的能量来源很特别：社交让你放松，但规划让你安心。你能在和朋友约饭的同时，心里默默过一遍明天的复习计划。你主动扛事但不邀功，考试第一但不张扬，是那种"毕业时大家才发现你最牛"的存在。',
+                strengths: ['社交学习两手抓', '计划周密执行力强', '关键时刻主动扛事', '情绪稳定不内耗'],
+                weaknesses: ['偶尔太卷让身边人压力大', '不擅长拒绝导致任务超载', '过于理性显得不够亲近'],
+                best: { code: 'IJFF', em: '🍜', name: '食堂NPC', desc: '你负责卷，ta负责带你吃饭，完美互补', sim: 88 },
+                comp: { code: 'EPLF', em: '🌙', name: '双面向日葵', desc: '你帮ta分析深夜emo，ta帮你在社交场合发光', sim: 82 },
+                motto: '"也没怎么复习""随便考的""这题我也不太会"' },
+            'EPFF': { em: '🚀', nm: '社交悍匪', tg: '不是在社交，就是在去社交的路上', typeTag: '人脉枢纽·快乐传播者',
+                interpret: '你是校园里的人脉中枢，微信好友四位数起步。从大一到大四、从社团到学生会、从食堂阿姨到门卫大叔，没有你不认识的人。你有一种让任何人在三分钟内觉得"这人能处"的超能力。你的能量从人群中来，热闹的场合让你充电。你跟着感觉走，不刻意规划，但总能把事情办成——因为你认识能办成事的人。',
+                strengths: ['人脉广泛资源丰富', '感染力强能带动气氛', '灵活应变不僵化', '真诚热心值得信赖'],
+                weaknesses: ['社交消耗后需要独处恢复', '有时过于依赖人脉而非自身能力', '感性决策偶尔不够理性'],
+                best: { code: 'EJFT', em: '🛏️', name: '寝室不动产', desc: '你外出social收集情报，ta在宿舍帮你分析汇总', sim: 86 },
+                comp: { code: 'IJLT', em: '🤿', name: '深海潜艇', desc: '你想拉ta出来玩，ta想一个人待着，互相不理解但莫名和谐', sim: 78 },
+                motto: '"今晚有空吗？""我有个朋友……""你认识xx吗？我帮你问问"' },
+            'IJLT': { em: '🤿', nm: '深海潜艇', tg: '水面之下，独自航行', typeTag: '静音卷王·深藏不露',
+                interpret: '你就像一艘深海潜艇——水面上一片平静，水下已经走了很远很远。你从不发朋友圈说自己学了多久，但期末成绩出来时全班都在问"这个分是谁的"。你不喜欢组队，但如果必须组队，你会默默把所有活儿干了然后署上全组名字。你是内向规划者的典型代表：独处让你恢复能量，提前计划让你感到安全。你理性冷静，情绪不外露。',
+                strengths: ['专注力极强', '计划执行滴水不漏', '独立思考不盲从', '情绪稳定可靠'],
+                weaknesses: ['不擅团队协作', '过于低调错失机会', '不表达需求容易被忽略'],
+                best: { code: 'IPFT', em: '👀', name: '人间摄像头', desc: '你们可以坐在一起一整天不说话，但彼此都觉得很舒服', sim: 90 },
+                comp: { code: 'EJLT', em: '🥬', name: '卷心菜', desc: '都是卷王，你是静音模式ta是震动模式，偶尔共振', sim: 85 },
+                motto: '"没学""真没学""这次真的没复习"' },
+            'IPFT': { em: '👀', nm: '人间摄像头', tg: '存在感为零，信息量为满', typeTag: '隐形观察者·校园数据库',
+                interpret: '你是这个校园里的隐藏摄像机。班级群从不说话，但你知道谁和谁在一起了、谁挂科了、谁和辅导员吵过架。水课上永远坐在最后一排，戴着耳机但没放音乐，前面的人说了什么你听得一清二楚。你不是故意偷听，你只是太安静了，安静到别人忘了你的存在。你是内向随性但理性的观察者：不主动、不拒绝、不负责，但内心有一个完整的数据库。',
+                strengths: ['观察力敏锐信息全面', '安静可靠值得信任', '不介入是非保持客观', '独处也能自得其乐'],
+                weaknesses: ['存在感低容易被忽略', '不主动表达错失机会', '过度观察可能被视为疏离'],
+                best: { code: 'IJLT', em: '🤿', name: '深海潜艇', desc: '你们共享同一个安静频道，不用说话也能互相理解', sim: 88 },
+                comp: { code: 'EPFF', em: '🚀', name: '社交悍匪', desc: 'ta会试图让你"活泼一点"，你会在心里翻白眼但觉得ta挺可爱', sim: 75 },
+                motto: '（内心OS很多，但从来不说出口）' },
+            'EPLF': { em: '🌙', nm: '双面向日葵', tg: '白天追太阳，晚上追月亮', typeTag: '反差萌代表·深夜诗人',
+                interpret: '你是校园里最鲜明的反差存在。白天的你是所有人的小太阳：组局的是你，热场的是你，讲笑话把全班逗笑的是你。但到了深夜，你会突然安静下来，开始思考人生、怀疑未来、翻来覆去睡不着。朋友圈白天是段子，凌晨是诗歌，发完又秒删。你不是假装快乐——你只是把阳光给了别人，把影子留给了自己。你感性丰富，情绪充沛。',
+                strengths: ['感染力强能带动气氛', '情感丰富有同理心', '关键时刻能扛事', '创意和灵感充沛'],
+                weaknesses: ['情绪波动大容易内耗', '白天过度消耗导致深夜崩溃', '感性决策有时冲动'],
+                best: { code: 'EJLT', em: '🥬', name: '卷心菜', desc: '你深夜emo时ta会发一段逻辑清晰的分析帮你走出来', sim: 84 },
+                comp: { code: 'IPLT', em: '🎭', name: '装菜王者', desc: '你俩都在深夜失眠，但你是写诗ta是偷偷卷', sim: 80 },
+                motto: '"哈哈哈哈哈哈" / （凌晨）"你睡了吗"' },
+            'IJFF': { em: '🍜', nm: '食堂NPC', tg: '不是在食堂，就是在去食堂的路上', typeTag: '美食活地图·一人食仪式感',
+                interpret: '你对校园美食的掌握程度，堪比游戏里固定位置的NPC——每天准时出现在食堂，每个窗口的拿手菜倒背如流，能精确说出"二食堂的麻辣烫比一食堂的汤底浓，但一食堂的麻酱更好吃"。你不一定是吃货，你只是对"吃"这件事有一种仪式感的坚持。一个人吃饭也不凑合，不点外卖不是因为懒，而是觉得"吃饭就应该好好吃"。',
+                strengths: ['美食鉴赏力一流', '一个人也能过得精致', '规划能力强但不卷', '真诚分享让人信赖'],
+                weaknesses: ['社交圈相对狭窄', '对新事物接受较慢', '有时候太执着于"吃"本身'],
+                best: { code: 'EJLT', em: '🥬', name: '卷心菜', desc: '你负责导航美食，ta负责买单（因为ta也懒得想要吃什么）', sim: 83 },
+                comp: { code: 'IPFT', em: '👀', name: '人间摄像头', desc: '你们可以一起安静地吃一顿饭，全程不用说一句话', sim: 79 },
+                motto: '"相信我，这家真的好吃""别点那个，点这个"' },
+            'IPLT': { em: '🎭', nm: '装菜王者', tg: '"我不会""没复习"——结果第一', typeTag: '伪装大师·传说级稀有',
+                interpret: '你是大学里最危险的存在。平时一副"都行""无所谓""随便吧"的样子，上课趴着、下课消失、朋友圈空白。大家都以为你和他们一样在摆烂，直到期末考试——你掏出完整笔记，拿了最高分，顺便还交了篇论文发表了。装菜是你的保护色，王者是你的真身。你不是不卷，是卷得不让你看见。你内向随性但主导力强，理性高效但从不声张。',
+                strengths: ['深藏不露实力超群', '不随波逐流有自己节奏', '效率极高不浪费时间', '关键时刻一鸣惊人'],
+                weaknesses: ['过于低调容易被低估', '伪装过度可能失去信任', '不喜社交错失合作机会'],
+                best: { code: 'IJLT', em: '🤿', name: '深海潜艇', desc: '只有你们能互相识别对方是同类——装菜遇上静音卷', sim: 87 },
+                comp: { code: 'EJLT', em: '🥬', name: '卷心菜', desc: '你俩是一个品种的卷心菜，但他切开了你没切', sim: 81 },
+                motto: '"我真没学""这次肯定挂""随便写的"' },
+            'EJFT': { em: '🛏️', nm: '寝室不动产', tg: '永远在宿舍，永远有人找', typeTag: '宿舍锚点·精神支柱',
+                interpret: '你在宿舍的时间之长，让人怀疑你是不是和床位长在一起了。室友出门时你在床上，室友回来时你还在床上。但你不是懒——你是整个宿舍的精神锚点。室友心情不好第一个找你说，室友吵架找你评理，室友不知道吃什么第一个问你。你像一套扎根在宿舍的不动产：谁都可能搬走，但你还在这里。',
+                strengths: ['可靠稳定是团队的定心丸', '善于倾听和分析问题', '规划能力强能帮室友理清思路', '情绪稳定给人安全感'],
+                weaknesses: ['宅过度可能缺乏运动', '过于依赖宿舍舒适区', '帮助别人太多忽略自己'],
+                best: { code: 'EPFF', em: '🚀', name: '社交悍匪', desc: 'ta负责在外面收集情报，你负责在宿舍汇总分析', sim: 89 },
+                comp: { code: 'IJFF', em: '🍜', name: '食堂NPC', desc: '你想让ta帮你带饭，ta想让你陪ta去食堂，永远的博弈', sim: 77 },
+                motto: '"谁去食堂？帮我带一份""刚才有人找你，我帮你签了"' },
+            'EJFF': { em: '📋', nm: '课代表型AI', tg: '24小时在线，@必回', typeTag: '人工客服·班级运转核心',
+                interpret: '你是班级群里的"收到"机器人。老师发通知你第一个回"收到"，同学问作业你秒发截图，小组交作业你提前整理好格式统一发。你有一种把一切安排得明明白白的强迫症，但你不是为了自己——你是为了让所有人都能按时交上作业。你像一个人工智能课代表：不知疲倦、不会生气、永远在线。',
+                strengths: ['责任心极强服务周到', '组织能力一流有条不紊', '热情助人人缘好', '信息整合能力突出'],
+                weaknesses: ['过度服务容易被当成理所当然', '边界感弱容易揽太多活', '感性有时导致情绪疲惫'],
+                best: { code: 'IPLT', em: '🎭', name: '装菜王者', desc: '你负责提醒ddl，ta负责在ddl前惊艳所有人', sim: 82 },
+                comp: { code: 'IPFF', em: '🦥', name: '宿舍考拉', desc: '你发10遍通知ta已读不回，你是唯一能让ta动起来的人', sim: 76 },
+                motto: '"收到""提醒一下大家""我整理好了发群里了"' },
+            'EPLT': { em: '🎤', nm: '隐形大哥', tg: '看起来最不靠谱的，往往最靠谱', typeTag: '扫地僧·低调大佬',
+                interpret: '你是团队里那个"蜜汁存在"。平时咋咋呼呼、插科打诨、看起来最不上心。但出了问题大家都看向你，你也确实能搞定。你不是那种振臂一呼的领袖，你是那种"大家都在吵的时候你在旁边听，最后说一句话所有人都安静了"的人。像武侠小说里的扫地僧：不穿袈裟，但内力深厚。',
+                strengths: ['关键时刻决策力强', '轻松化解团队矛盾', '低调务实不争功', '适应力强什么场面都能hold住'],
+                weaknesses: ['平时太不正经容易被低估', '不喜欢主动揽事可能错过机会', '理性外表下偶尔也需要倾诉'],
+                best: { code: 'EPLF', em: '🌙', name: '双面向日葵', desc: '你帮ta走出深夜emo，ta帮你在社交场合发光发热', sim: 85 },
+                comp: { code: 'IJLT', em: '🤿', name: '深海潜艇', desc: '你俩都强，你是显性的强ta是隐性的强，互为镜像', sim: 80 },
+                motto: '"别吵了别吵了，听我说一句""行吧我来"' },
+            'IJLF': { em: '🔮', nm: '赛博许愿池', tg: '线上滔滔不绝，线下安静如鸡', typeTag: '双面人·线上表达者',
+                interpret: '你在微信群里的发言量是线下的100倍。面对面你只会微笑点头，但在群里你能写出小作文。你是那种"平时不说话，一开口所有人震惊"的人。你有自己的想法和坚持，只是不习惯当面表达。你像许愿池：表面平静，池底全是别人投进来的问题，而你一个一个在心里认真回答。',
+                strengths: ['文字表达力强思考深入', '善于倾听和分析', '有主见但不强势', '线上社交游刃有余'],
+                weaknesses: ['线下社交障碍需要突破', '面对面沟通效率低', '过度依赖文字表达'],
+                best: { code: 'IJFF', em: '🍜', name: '食堂NPC', desc: '你们线上互动频繁，线下面基后一起沉默但很舒服', sim: 83 },
+                comp: { code: 'EPFF', em: '🚀', name: '社交悍匪', desc: 'ta在线下社交你在线上社交，互相觉得对方"不够全面"', sim: 74 },
+                motto: '（群里）长文分析 （线下）"嗯""对""好的"' },
+            'IPLF': { em: '🦉', nm: '熬夜冠军组组长', tg: '白天失踪人口，深夜精神爆发', typeTag: '时差党·深夜战神',
+                interpret: '白天的你：消失。找你不回，上课迟到，走路像在梦游。凌晨的你：复活。灵感爆棚，效率拉满，朋友圈发出今晚第一条深度思考。你不是拖延症，你只是生物钟不在东八区。你有一种"反正来得及"的超然自信，而这种自信每次都让你在最后一刻真的来得及。',
+                strengths: ['深夜效率惊人', '创意和灵感在夜晚爆发', '独立完成任务能力强', '有独特的节奏感'],
+                weaknesses: ['作息混乱影响健康', '白天错过重要信息', '团队协作时间难协调'],
+                best: { code: 'EPLF', em: '🌙', name: '双面向日葵', desc: '你们共享深夜大脑区，凌晨朋友圈互相点赞', sim: 86 },
+                comp: { code: 'EJLT', em: '🥬', name: '卷心菜', desc: 'ta早上六点起床学习，你早上六点刚睡，互为阴阳两极', sim: 72 },
+                motto: '"白天别找我""凌晨找我随叫随到""来得及"' },
+            'EJLF': { em: '☀️', nm: '人间小太阳Pro Max', tg: '元气永动机，快乐辐射源', typeTag: '永动机·超级稀有',
+                interpret: '你是那个"永远在发光"的人。不是装的，是真的精力充沛。早上七点打卡晨跑的是你，上午组织社团会议的是你，中午帮同学带饭的是你，晚上复习到闭馆回宿舍还顺便给室友做心理按摩的也是你。你不理解为什么别人会累，因为你像插着充电宝活着的。你是一颗行走的太阳，走到哪亮到哪。',
+                strengths: ['精力无限感染力强', '领导力和执行力兼备', '真诚温暖治愈身边人', '多线程处理能力超强'],
+                weaknesses: ['过度消耗自己容易burnout', '不擅长拒绝导致任务堆积', '太耀眼可能让内向的人有压力'],
+                best: { code: 'EJFT', em: '🛏️', name: '寝室不动产', desc: '你负责发光发热，ta负责被你照亮后给你递水', sim: 88 },
+                comp: { code: 'IPFF', em: '🦥', name: '宿舍考拉', desc: '你的存在对ta来说是噪音干扰，但ta私下觉得你挺可爱', sim: 73 },
+                motto: '"冲！""我可以！""还有谁没弄完？我帮你"' },
+            'IJFT': { em: '🕵️', nm: '暗中观察局局长', tg: '不说话，但什么都知道', typeTag: '人形数据库·神秘低调',
+                interpret: '你是班级里最神秘的存在。上课永远坐同一个位置，笔记工整得像印刷品，但老师提问你从不举手。你不参与任何八卦讨论，但如果有人问你"那个谁和那个谁什么时候在一起的"，你能精确到日期。你不是城府深，你只是喜欢观察、整理、归档。你像一间安静的资料室，不大，但什么都有。',
+                strengths: ['观察力极强信息准确', '笔记和资料整理一流', '冷静理性不受情绪干扰', '可靠且值得信任'],
+                weaknesses: ['过于安静容易被忽视', '不主动分享信息', '社交存在感过低'],
+                best: { code: 'IPFT', em: '👀', name: '人间摄像头', desc: '你们共享一个频道，不说话也能一起整理这个世界', sim: 91 },
+                comp: { code: 'EJLF', em: '☀️', name: '人间小太阳', desc: 'ta的热情让你有点不知所措，但你会悄悄帮ta整理活动记录', sim: 76 },
+                motto: '（内心）"这个我记下了" （嘴上）"嗯"' },
+            'EPFT': { em: '👏', nm: '捧场王中王', tg: '气氛组终身成就奖', typeTag: '最佳观众·温柔担当',
+                interpret: '你可能不是人群里最亮眼的那个，但你是人群里最不可缺少的那个。别人讲笑话你第一个笑，别人提议出去玩你第一个举手，别人需要附和时你从不缺席。你有一种让任何人觉得自己被认真对待了的温柔天赋。你不是没主见，你只是觉得大家开心就好。',
+                strengths: ['共情能力强让人感到被重视', '团队润滑剂减少冲突', '适应力强什么场合都能配合', '低调但不可或缺'],
+                weaknesses: ['过度捧场可能显得不够真诚', '不表达真实想法容易被忽略', '跟随型在关键时刻可能缺位'],
+                best: { code: 'EPFF', em: '🚀', name: '社交悍匪', desc: 'ta是主角你是最佳观众，互相成就彼此的高光时刻', sim: 87 },
+                comp: { code: 'IJLT', em: '🤿', name: '深海潜艇', desc: '你的捧场对ta无效，这让你有一点点挫败感', sim: 71 },
+                motto: '"哈哈哈哈哈""可以可以可以""我觉得挺好的"' },
+            'IPFF': { em: '🦥', nm: '宿舍考拉', tg: '抱住床不放，抱住室友不放', typeTag: '躺学大师·松弛感天花板',
+                interpret: '你是宿舍里的吉祥物。行动缓慢，反应延迟，对一切竞争性活动毫无兴趣。你最擅长的运动是翻身，最远的位移是从床到厕所。但你有一种让人卸下防备的松弛感——室友考试焦虑时看你一眼就觉得"好像也没什么大不了"。你像一只考拉：大部分时间在睡，清醒的时候也懒得动，但抱起来很温暖。',
+                strengths: ['松弛感治愈身边人的焦虑', '不争不抢活得自在', '真诚不装让人放松', '情绪稳定是室友的定心丸'],
+                weaknesses: ['行动力不足容易拖延', '过度躺平可能影响学业', '社交参与度低可能被边缘化'],
+                best: { code: 'EJFT', em: '🛏️', name: '寝室不动产', desc: '你们可以一起躺一整天，一句话不说但很满足', sim: 90 },
+                comp: { code: 'EJLF', em: '☀️', name: '人间小太阳', desc: '你的存在是ta能量守恒的另一半，ta发光你吸收', sim: 74 },
+                motto: '"随便""都行""别卷了来躺一会儿"' }
+        };
+
+        var curQ = 0;
+        var sel = {};
+        var sc = { E: 0, I: 0, J: 0, P: 0, L: 0, F: 0, T: 0, Fs: 0 };
+
+        // ==================== 初始化 ====================
+        function init() {
+            renderHomeGrid();
+            document.getElementById('homeCard').classList.remove('hidden');
+            document.getElementById('quizCard').classList.add('hidden');
+            document.getElementById('resultArea').innerHTML = '';
+        }
+
+        function renderHomeGrid() {
+            var grid = document.getElementById('homeMiniGrid');
+            var html = '';
+            for (var code in pers) {
+                var p = pers[code];
+                html += '<div class="personality-mini" onclick="showPersonalityDetail(\'' + code + '\')">';
+                html += '<div class="p-emoji">' + p.em + '</div>';
+                html += '<div class="p-code">' + code + '</div>';
+                html += '<div class="p-name">' + p.nm + '</div>';
+                html += '<div class="p-tagline">' + p.tg + '</div>';
+                html += '</div>';
+            }
+            grid.innerHTML = html;
+        }
+
+        function showPersonalityDetail(code) {
+            var p = pers[code];
+            if (!p) return;
+            var resultArea = document.getElementById('resultArea');
+            resultArea.innerHTML = buildResultCard(code, p);
+            document.getElementById('homeCard').classList.add('hidden');
+            document.getElementById('quizCard').classList.add('hidden');
+            // 滚动到结果区域
+            setTimeout(function() {
+                var target = resultArea.querySelector('.card');
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+
+        function buildResultCard(code, p) {
+            var html = '<div class="card">';
+            // 英雄区
+            html += '<div class="result-hero">';
+            html += '<div class="result-emoji">' + p.em + '</div>';
+            html += '<div class="result-code">' + code + '</div>';
+            html += '<div class="result-name">' + p.nm + '</div>';
+            html += '<div class="result-tagline">' + p.tg + '</div>';
+            html += '<div class="result-type-tag">' + p.typeTag + '</div>';
+            html += '</div>';
+            // 人物解读
+            html += '<div class="interpretation"><b>📖 人物解读</b><br>' + p.interpret + '</div>';
+            // 优势盲点
+            html += '<div class="sw-row">';
+            html += '<div class="sw-box strengths"><h4>✅ 优势</h4><ul>';
+            for (var i = 0; i < p.strengths.length; i++) { html += '<li>' + p.strengths[i] + '</li>'; }
+            html += '</ul></div>';
+            html += '<div class="sw-box weaknesses"><h4>⚠️ 盲点</h4><ul>';
+            for (var j = 0; j < p.weaknesses.length; j++) { html += '<li>' + p.weaknesses[j] + '</li>'; }
+            html += '</ul></div></div>';
+            // 维度分数
+            html += buildDimBars(code);
+            // 匹配人格
+            html += '<div class="match-row">';
+            html += '<div class="match-card best"><h4>🤝 最佳搭子</h4>';
+            html += '<div class="m-emoji">' + p.best.em + '</div>';
+            html += '<div class="m-name">' + p.best.name + '</div>';
+            html += '<div class="sim-badge">' + p.best.sim + '%匹配</div>';
+            html += '<div class="m-desc">' + p.best.desc + '</div></div>';
+            html += '<div class="match-card comp"><h4>⚡ 相爱相杀</h4>';
+            html += '<div class="m-emoji">' + p.comp.em + '</div>';
+            html += '<div class="m-name">' + p.comp.name + '</div>';
+            html += '<div class="sim-badge" style="background:#e8a87c;">' + p.comp.sim + '%互补</div>';
+            html += '<div class="m-desc">' + p.comp.desc + '</div></div>';
+            html += '</div>';
+            // 口头禅
+            html += '<div class="result-motto">💬 ' + p.motto + '</div>';
+            // 按钮
+            html += '<div class="btn-row-center">';
+            html += '<button class="btn btn-primary" onclick="startTest()">🔄 开始测试</button>';
+            html += '<button class="btn btn-outline" onclick="goHome()">👀 查看全部16型</button>';
+            html += '</div></div>';
+            return html;
+        }
+
+        function buildDimBars(code) {
+            var scores = {
+                E: code[0] === 'E' ? 75 : 25,
+                I: code[0] === 'I' ? 75 : 25,
+                J: code[1] === 'J' ? 75 : 25,
+                P: code[1] === 'P' ? 75 : 25,
+                L: code[2] === 'L' ? 75 : 25,
+                F_f: code[2] === 'F' ? 75 : 25,
+                T: code[3] === 'T' ? 75 : 25,
+                F_s: code[3] === 'F' ? 75 : 25
+            };
+            var html = '<div class="dim-section"><h4>📊 维度倾向分数</h4>';
+            var dims = [
+                { label: '外向 (E)', val: scores.E, cls: 'blue' },
+                { label: '内向 (I)', val: scores.I, cls: 'orange' },
+                { label: '规划 (J)', val: scores.J, cls: 'blue' },
+                { label: '随性 (P)', val: scores.P, cls: 'orange' },
+                { label: '主导 (L)', val: scores.L, cls: 'blue' },
+                { label: '跟随 (F)', val: scores.F_f, cls: 'orange' },
+                { label: '理性 (T)', val: scores.T, cls: 'blue' },
+                { label: '感性 (F)', val: scores.F_s, cls: 'orange' }
+            ];
+            for (var i = 0; i < dims.length; i++) {
+                var d = dims[i];
+                html += '<div class="dim-row">';
+                html += '<span class="dim-label">' + d.label + '</span>';
+                html += '<div class="dim-bar-wrap"><div class="dim-bar-fill ' + d.cls + '" style="width:' + d.val +
+                    '%"></div></div>';
+                html += '<span class="dim-val">' + d.val + '%</span>';
+                html += '</div>';
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function goHome() {
+            document.getElementById('resultArea').innerHTML = '';
+            document.getElementById('homeCard').classList.remove('hidden');
+            document.getElementById('quizCard').classList.add('hidden');
+            document.getElementById('homeCard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ==================== 测试逻辑 ====================
+        function startTest() {
+            curQ = 0;
+            sel = {};
+            sc = { E: 0, I: 0, J: 0, P: 0, L: 0, F: 0, T: 0, Fs: 0 };
+            document.getElementById('homeCard').classList.add('hidden');
+            document.getElementById('resultArea').innerHTML = '';
+            document.getElementById('quizCard').classList.remove('hidden');
+            renderQ();
+        }
+
+        function renderQ() {
+            var q = questions[curQ];
+            var area = document.getElementById('questionArea');
+            var isMulti = q.type === 'multi';
+            var curSel = sel[q.id] || [];
+            var html = '<div class="q-badge">' + (isMulti ? '多选' : '单选') + ' · 第' + q.id + '题</div>';
+            html += '<div class="q-title">' + q.title + '</div>';
+            if (isMulti) html += '<div class="q-hint">💡 可多选，选好后点击下一题</div>';
+            html += '<div class="options">';
+            for (var i = 0; i < q.options.length; i++) {
+                var o = q.options[i];
+                var selected = curSel.indexOf(o.l) > -1;
+                html += '<div class="option' + (selected ? ' selected' : '') + '" data-l="' + o.l + '" data-d="' + o
+                    .d + '" onclick="toggleOpt(this,' + q.id + ',\'' + o.l + '\',\'' + o.d + '\',' + isMulti + ')">';
+                html += '<div class="' + (isMulti ? 'option-check' : 'option-radio') + '">✓</div>';
+                html += '<span class="option-letter">' + o.l + '</span>';
+                html += '<span class="option-text">' + o.t + '</span></div>';
+            }
+            html += '</div>';
+            area.innerHTML = html;
+            updateProgress();
+            document.getElementById('prevBtn').classList.toggle('hidden', curQ === 0);
+            document.getElementById('nextBtn').textContent = curQ === questions.length - 1 ? '🎉 查看结果' : '下一题 →';
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function toggleOpt(el, qId, letter, dim, isMulti) {
+            if (!sel[qId]) sel[qId] = [];
+            if (isMulti) {
+                var idx = sel[qId].indexOf(letter);
+                if (idx > -1) { sel[qId].splice(idx, 1);
+                    el.classList.remove('selected'); } else { sel[qId].push(letter);
+                    el.classList.add('selected'); }
+            } else {
+                var parent = el.parentElement;
+                var all = parent.querySelectorAll('.option');
+                for (var i = 0; i < all.length; i++) { all[i].classList.remove('selected'); }
+                el.classList.add('selected');
+                sel[qId] = [letter];
+            }
+        }
+
+        function nextQ() {
+            var q = questions[curQ];
+            if (!sel[q.id] || sel[q.id].length === 0) {
+                var card = document.getElementById('quizCard');
+                card.style.transform = 'translateX(-5px)';
+                setTimeout(function() { card.style.transform = 'translateX(5px)'; }, 120);
+                setTimeout(function() { card.style.transform = ''; }, 240);
+                return;
+            }
+            addScores(q, sel[q.id]);
+            if (curQ < questions.length - 1) {
+                curQ++;
+                renderQ();
+            } else {
+                showResult();
+            }
+        }
+
+        function prevQ() {
+            if (curQ > 0) {
+                var q = questions[curQ];
+                subScores(q, sel[q.id] || []);
+                curQ--;
+                renderQ();
+            }
+        }
+
+        function updateProgress() {
+            var pct = Math.round(((curQ + 1) / questions.length) * 100);
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('progressText').textContent = (curQ + 1) + '/' + questions.length;
+        }
+
+        function addScores(q, letters) {
+            var done = {};
+            for (var i = 0; i < letters.length; i++) {
+                var l = letters[i];
+                for (var j = 0; j < q.options.length; j++) {
+                    if (q.options[j].l === l && !done[q.options[j].d]) {
+                        done[q.options[j].d] = true;
+                        sc[q.options[j].d] = (sc[q.options[j].d] || 0) + 1;
+                    }
+                }
+            }
+        }
+
+        function subScores(q, letters) {
+            var done = {};
+            for (var i = 0; i < letters.length; i++) {
+                var l = letters[i];
+                for (var j = 0; j < q.options.length; j++) {
+                    if (q.options[j].l === l && !done[q.options[j].d]) {
+                        done[q.options[j].d] = true;
+                        sc[q.options[j].d] = Math.max(0, (sc[q.options[j].d] || 0) - 1);
+                    }
+                }
+            }
+        }
+
+        function showResult() {
+            var e = sc.E || 0,
+                i = sc.I || 0,
+                j = sc.J || 0,
+                p = sc.P || 0,
+                l = sc.L || 0,
+                f = sc.F || 0,
+                t = sc.T || 0,
+                fs = sc.Fs || 0;
+            var c1 = e > i ? 'E' : i > e ? 'I' : (sel[5] || []).indexOf('C') > -1 ? 'E' : 'I';
+            var c2 = j > p ? 'J' : p > j ? 'P' : function() {
+                var a = sel[1] || [];
+                for (var k = 0; k < a.length; k++) { if (a[k] === 'A' || a[k] === 'B') return true; }
+                return false;
+            }() ? 'J' : 'P';
+            var c3 = l > f ? 'L' : f > l ? 'F' : function() {
+                var a = sel[9] || [];
+                for (var k = 0; k < a.length; k++) { if (a[k] === 'A' || a[k] === 'B') return true; }
+                return false;
+            }() ? 'L' : 'F';
+            var c4 = t > fs ? 'T' : fs > t ? 'F' : (sel[15] || []).indexOf('A') > -1 ? 'T' : 'F';
+            var code = c1 + c2 + c3 + c4;
+            var pData = pers[code];
+            if (!pData) { alert('未找到人格：' + code); return; }
+            document.getElementById('quizCard').classList.add('hidden');
+            var resultArea = document.getElementById('resultArea');
+            resultArea.innerHTML = buildResultCard(code, pData);
+            // 滚动到结果
+            setTimeout(function() {
+                var target = resultArea.querySelector('.card');
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+
+        // ==================== 启动 ====================
+        init();
+    </script>
+</body>
+</html>
